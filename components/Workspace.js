@@ -1389,73 +1389,87 @@ onChange={handleImport}
 aria-label="Import Excel contacts"
 />
 {contactDraft && (
-<Modal
-title={contactDraft.id ? "Edit contact" : "Add a contact"}
-onClose={() => {
-if (!busy) setContactDraft(null);
-}}
->
-<p className="modal-description">
-        Only the first name is used to personalize messages.
-</p>
-<form onSubmit={saveContact}>
-<div className="form-grid">
-{[
-["first_name", "First Name", true, 100],
-["last_name", "Last Name", false, 100],
-["company", "Company", false, 200],
-["job_title", "Job Title", false, 200]
-].map(([key, label, required, maxLength]) => (
-<label className="field" key={key}>
-{label} {required && <span className="required">*</span>}
-<input
-required={required}
-maxLength={maxLength}
-autoFocus={key === "first_name"}
-value={contactDraftkey || ""}
-onChange={(event) =>
-setContactDraft((previous) => ({
-...previous,
-}))
-}
-/>
-</label>
-))}
-<label className="field span-two">
-            LinkedIn Profile URL
-<input
-type="url"
-maxLength={500}
-placeholder="https://www.linkedin.com/in/name"
-value={contactDraft.linkedin_url || ""}
-onChange={(event) =>
-setContactDraft((previous) => ({
-...previous,
-linkedin_url: event.target.value
-}))
-}
-/>
-<small className="muted">
-              Optional. Opens in a new tab without any automation.
-</small>
-</label>
-</div>
-<div className="modal-actions">
-<Button disabled={busy} onClick={() => setContactDraft(null)}>
-            Cancel
-</Button>
-<Button
-type="submit"
-variant="primary"
-icon={Save}
-disabled={busy}
->
-{busy ? "Saving…" : "Save contact"}
-</Button>
-</div>
-</form>
-</Modal>
+  <Modal
+    title={contactDraft.id ? "Edit contact" : "Add a contact"}
+    onClose={() => {
+      if (!busy) setContactDraft(null);
+    }}
+  >
+    <p className="modal-description">
+      Only the first name is used to personalize messages.
+    </p>
+
+    <form onSubmit={saveContact}>
+      <div className="form-grid">
+        {[
+          ["first_name", "First Name", true, 100],
+          ["last_name", "Last Name", false, 100],
+          ["company", "Company", false, 200],
+          ["job_title", "Job Title", false, 200],
+        ].map(([key, label, required, maxLength]) => (
+          <label className="field" key={key}>
+            {label}
+            {required && <span className="required">*</span>}
+
+            <input
+              required={required}
+              maxLength={maxLength}
+              autoFocus={key === "first_name"}
+              value={contactDraft[key] || ""}
+              onChange={(event) =>
+                setContactDraft((previous) => ({
+                  ...previous,
+                  [key]: event.target.value,
+                }))
+              }
+            />
+          </label>
+        ))}
+
+        <label className="field span-two">
+          LinkedIn Profile URL
+
+          <input
+            type="url"
+            maxLength={500}
+            placeholder="https://www.linkedin.com/in/name"
+            value={contactDraft.linkedin_url || ""}
+            onChange={(event) =>
+              setContactDraft((previous) => ({
+                ...previous,
+                linkedin_url: event.target.value,
+              }))
+            }
+          />
+
+          <small className="muted">
+            Optional. Opens in a new tab without any automation.
+          </small>
+        </label>
+      </div>
+
+      <div className="modal-actions">
+        <Button
+          type="button"
+          disabled={busy}
+          onClick={() => setContactDraft(null)}
+        >
+          Cancel
+        </Button>
+
+        <Button
+          type="submit"
+          variant="primary"
+          icon={Save}
+          disabled={busy}
+        >
+          {busy ? "Saving…" : "Save contact"}
+        </Button>
+      </div>
+    </form>
+    </Modal>
 )}
+
 {viewedMessage && (
 <Modal
 title={`Message for ${fullName(viewedMessage)}`}
